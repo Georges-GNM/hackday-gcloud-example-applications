@@ -1,17 +1,13 @@
 GCloud example apps
 ===================
 
-Example application for getting up and running in Google Cloud.
-
-There are two example apps, showing a hello world application in our two main language toolchains - Node and Scala.
-
-These are templates you can use as a reference for getting started, we recommend taking these as a starting point.
+Example applications for getting up and running in Google Cloud using our two main languages - [Node](https://nodejs.org/en) and [Scala](https://www.scala-lang.org/). These are templates you can use as a reference for getting started, we recommend taking these as a starting point.
 
 **NOTE:** your app will need to use a different service name, which means editing the deploy script.
 
 ## Initial setup
 
-Ideally you'll have done this ahead of the hack day, but these steps are required to be able to deploy these apps to Google Cloud.
+Ideally you'll have done this ahead of the hack day, these steps are required to be able to deploy your app to Google Cloud.
 
 You will need to:
 - install the `gcloud` CLI tool
@@ -111,4 +107,4 @@ After this finishes:
 
 We typically use the Play framework for Scala applications, but this is complex to set up for a hackday and not a great fit for Cloud Run's architecture. Instead, this demo app uses [Tapir](https://tapir.softwaremill.com/en/latest/) to create a simple webserver definition.
 
-Using Tapir this way also gives us the ability to automatically generate API documentation for the application, which you will see at `/docs` on your running service.
+Using Tapir this way also gives us the ability to automatically generate [API documentation](https://swagger.io/tools/swagger-ui/) for the application, which you will see at `/docs` on your running service.
