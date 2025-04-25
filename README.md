@@ -4,7 +4,7 @@ GCloud example apps
 Example applications for getting up and running in Google Cloud using our two main languages - [Node](https://nodejs.org/en) and [Scala](https://www.scala-lang.org/). These are templates you can use as a reference for getting started, we recommend taking these as a starting point.
 
 > [!IMPORTANT]
-> Your app will need to use a different service name, which means editing the deploy script.
+> Your app will need to use a different service name to the example project, which means editing the deploy script.
 
 ## Initial setup
 
@@ -20,8 +20,8 @@ Full instructions for these steps are in the hack day engineering guidance docum
 
 ## Node app
 
-An example node application can be found in the [node-app](./node-app/) directory.
+An example node application and documentation for running and deploying it can be found in the [node-app](./node-app/) directory.
 
 ## Scala app
 
-An example Scala application can be found in the [scala-app](./scala-app/) directory.
+An example Scala application and documentation for running and deploying it can be found in the [scala-app](./scala-app/) directory.
