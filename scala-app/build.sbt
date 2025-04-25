@@ -1,7 +1,10 @@
-ThisBuild / scalaVersion     := "3.3.5"
-ThisBuild / version          := "1.0.0-SNAPSHOT"
-ThisBuild / organization     := "com.example"
+ThisBuild / scalaVersion := "3.3.5"
+ThisBuild / version := "1.0.0-SNAPSHOT"
+ThisBuild / organization := "com.example"
 ThisBuild / organizationName := "example"
+
+val tapirVersion = "1.11.25"
+val sttpVersion = "4.0.3"
 
 lazy val root = (project in file("."))
   .enablePlugins(JavaAppPackaging)
@@ -9,12 +12,17 @@ lazy val root = (project in file("."))
   .settings(
     name := "scala-hello-world",
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp.tapir" %% "tapir-core" % "1.11.17",
-      "com.softwaremill.sttp.tapir" %% "tapir-netty-server-sync" % "1.11.17",
-      "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % "1.11.17",
-      "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % "1.11.17",
-      "ch.qos.logback" % "logback-classic" % "1.4.11",
-      "org.scalameta" %% "munit" % "0.7.29" % Test,
+      // webserver
+      "com.softwaremill.sttp.tapir" %% "tapir-core" % tapirVersion,
+      "com.softwaremill.sttp.tapir" %% "tapir-netty-server-sync" % tapirVersion,
+      "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % tapirVersion,
+      "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % tapirVersion,
+      // HTTP client
+      "com.softwaremill.sttp.client4" %% "core" % sttpVersion,
+      "com.softwaremill.sttp.client4" %% "circe" % sttpVersion,
+      // tooling
+      "ch.qos.logback" % "logback-classic" % "1.5.18",
+      "org.scalameta" %% "munit" % "1.1.0" % Test
     ),
 
     // Docker configuration
@@ -23,5 +31,5 @@ lazy val root = (project in file("."))
 
     dockerBaseImage := "eclipse-temurin:21-jre",
     dockerBuildOptions ++= Seq("--platform=linux/amd64"),
-    dockerExposedPorts ++= Seq(8080),
+    dockerExposedPorts ++= Seq(8080)
   )

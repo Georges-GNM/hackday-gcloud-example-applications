@@ -1,26 +1,34 @@
 package example
 
-import sttp.shared.Identity
+import io.circe.generic.auto.*
+import sttp.client4.*
+import sttp.client4.circe.*
 import sttp.tapir.*
+import sttp.tapir.generic.auto.*
+import sttp.tapir.json.circe.*
+import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.server.netty.sync.NettySyncServer
 import sttp.tapir.swagger.bundle.SwaggerInterpreter
-import sttp.tapir.json.circe.*
-import sttp.tapir.generic.auto.*
-import io.circe.generic.auto.*
 
 @main def main(): Unit = {
   NettySyncServer()
     .port(8080)
     .host("0.0.0.0")
-    .addEndpoints(Server.appEndpoints)
-    .addEndpoints(Server.swaggerEndpoints)
+    // serve our app's HTTP endpoints
+    .addEndpoints(Routes.appRoutes)
+    // optionally add automatically generated API documentation
+    .addEndpoints(Routes.swaggerRoutes)
     .startAndWait()
 }
 
+/** An example application that demonstrates a few different handlers
+  */
+object Routes {
+  private val httpClient = DefaultSyncBackend()
 
-object Server {
-  // HTTP endpoints
-  val index = endpoint.get
+  /** Index handler that returns HTML
+    */
+  private val index = endpoint.get
     .in("")
     .out(htmlBodyUtf8)
     .handleSuccess { _ =>
@@ -29,13 +37,19 @@ object Server {
          """.stripMargin
     }
 
-  val hello = endpoint.get
+  /** HTTP endpoint that takes an optional GET parameter called `name`
+    */
+  private val hello = endpoint.get
     .in("hello" / "world")
     .in(query[Option[String]]("name"))
     .out(stringBody)
-    .handleSuccess(nameOpt => s"Hello, ${nameOpt.getOrElse("world")}!")
+    .handleSuccess { maybeName =>
+      s"Hello, ${maybeName.getOrElse("world")}!"
+    }
 
-  val users = endpoint.get
+  /** Endpoint that returns User objects as JSON
+    */
+  private val users = endpoint.get
     .in("users")
     .out(jsonBody[List[User]])
     .handleSuccess { _ =>
@@ -45,12 +59,39 @@ object Server {
       )
     }
 
-  case class User(id: String, username: String)
+  /** An endpoint that:
+    *   - makes an HTTP call
+    *   - parses the response
+    *   - returns JSON
+    *
+    * It addresses the contrived use case of looking up the server's IP
+    * information and returning just the IP address.
+    */
+  private val ipInformation = endpoint.get
+    .in("ip-info")
+    .out(jsonBody[Ip])
+    .errorOut(stringBody)
+    .handleSuccess { _ =>
+      val ipData = basicRequest
+        .get(uri"https://api.myip.com/")
+        .response(asJsonOrFail[IpInfo])
+        .send(httpClient)
+        .body
+      // do some business logic here
+      Ip(ipData.ip)
+    }
 
-  // all our application endpoints
-  val appEndpoints = List(index, hello, users)
+  /** Our application's routes
+    */
+  val appRoutes = List(index, hello, users, ipInformation)
 
-  // API docs available at /docs
-  val swaggerEndpoints = SwaggerInterpreter()
-    .fromServerEndpoints[Identity](appEndpoints, "Hello world", "1.0.0")
+  /** Automatically generated API docs will be available at /docs
+    */
+  val swaggerRoutes = SwaggerInterpreter()
+    .fromServerEndpoints(appRoutes, "Hello world", "1.0.0")
 }
+
+case class User(id: String, username: String)
+
+case class IpInfo(ip: String, country: String, cc: String)
+case class Ip(ipAddress: String)
