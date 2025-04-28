@@ -1,5 +1,11 @@
 const functions = require('@google-cloud/functions-framework');
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
+
+// Read application name from APPLICATION_NAME file
+// this keeps it in sync with the deploy script
+const applicationName = fs.readFileSync(path.join(__dirname, '../APPLICATION_NAME'), 'utf-8').trim();
 
 // Create Express app
 const app = express();
@@ -23,4 +29,4 @@ app.get('/users', (req, res) => {
 });
 
 // Connect our Express app to Google's Functions Framework
-functions.http('node-hello-world', app); // must match target in package.json's npm run start
+functions.http(applicationName, app);

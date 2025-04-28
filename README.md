@@ -4,7 +4,7 @@ GCloud example apps
 Example applications for getting up and running in Google Cloud using our two main languages - [Node](https://nodejs.org/en) and [Scala](https://www.scala-lang.org/). These are templates you can use as a reference for getting started, we recommend taking these as a starting point.
 
 > [!IMPORTANT]
-> Your app will need to use a different service name to the example project, which means editing the deploy script.
+> Your app will need to use a different service name to the example project, which means editing the APPLICATION_NAME file in your your choice of the scala/node example.
 
 ## Initial setup
 
@@ -17,6 +17,16 @@ You will need to:
 - configure Docker to use gcloud to authenticate Google's container registry
 
 Full instructions for these steps are in the hack day engineering guidance document.
+
+## Application name
+
+In each example, the `APPLICATION_NAME` file is used to centralize the configuration of your application's name. This ensures consistency for local development, deployment and in Google Cloud, without having to change the name in multiple places.
+
+This value is used as the Cloud Run service name, so **it must be unique** to your application. Add a single line containing the desired name of your application.
+
+    my-app-name
+
+Please avoid spaces or special characters. If the name is not unique, deployment may fail or overwrite an existing service in Google Cloud.
 
 ## Node app
 

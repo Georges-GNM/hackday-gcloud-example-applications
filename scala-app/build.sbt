@@ -10,7 +10,8 @@ lazy val root = (project in file("."))
   .enablePlugins(JavaAppPackaging)
   .enablePlugins(DockerPlugin)
   .settings(
-    name := "scala-hello-world",
+    // Take name from the APPLICATION_NAME file so the container image matches the deploy script
+    name := IO.read(file("APPLICATION_NAME")).trim,
     libraryDependencies ++= Seq(
       // webserver
       "com.softwaremill.sttp.tapir" %% "tapir-core" % tapirVersion,
@@ -22,14 +23,16 @@ lazy val root = (project in file("."))
       "com.softwaremill.sttp.client4" %% "circe" % sttpVersion,
       // tooling
       "ch.qos.logback" % "logback-classic" % "1.5.18",
-      "org.scalameta" %% "munit" % "1.1.0" % Test
+      "org.scalatest" %% "scalatest" % "3.2.19" % Test
     ),
 
     // Docker configuration
     Docker / version := "latest",
-    Docker / packageName := "scala-hello-world-app", // This should match the `IMAGE_NAME` in the deploy script
-
+    Docker / packageName := s"${name.value}-image",
     dockerBaseImage := "eclipse-temurin:21-jre",
-    dockerBuildOptions ++= Seq("--platform=linux/amd64"),
+    dockerBuildOptions ++= Seq(
+      // build a cloud-run compatible image even on Apple silicone macs
+      "--platform=linux/amd64"
+    ),
     dockerExposedPorts ++= Seq(8080)
   )

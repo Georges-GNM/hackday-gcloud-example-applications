@@ -6,14 +6,14 @@ import sttp.client4.circe.*
 import sttp.tapir.*
 import sttp.tapir.generic.auto.*
 import sttp.tapir.json.circe.*
-import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.server.netty.sync.NettySyncServer
 import sttp.tapir.swagger.bundle.SwaggerInterpreter
 
 @main def main(): Unit = {
   NettySyncServer()
-    .port(8080)
     .host("0.0.0.0")
+    // matches `dockerExposedPorts` in `build.sbt`
+    .port(8080)
     // serve our app's HTTP endpoints
     .addEndpoints(Routes.appRoutes)
     // optionally add automatically generated API documentation
