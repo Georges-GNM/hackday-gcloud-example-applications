@@ -2,7 +2,7 @@ Example Node application
 ========================
 
 > [!IMPORTANT]
-> If you take this source code as a template, please change the application name in [APPLICATION_NAME](APPLICATION_NAME).
+> If you take this source code as a template, please change the application name in [APP_NAME](APP_NAME).
 
 This app uses [Google's "functions framework" node package](https://github.com/GoogleCloudPlatform/functions-framework-nodejs). This provides an Express-based framework for writing HTTP handlers that can be run locally or in Google Cloud.
 
@@ -23,7 +23,7 @@ Your service will be running at [http://localhost:8080](http://localhost:8080).
 ### Deploying to Google Cloud
 
 > [!IMPORTANT]
-> Please change the application's name in the APPLICATION_NAME file. The name must be unique.
+> Please change the application's name in the APP_NAME file. The name must be unique.
 
 The example includes a deploy script, which will:
 

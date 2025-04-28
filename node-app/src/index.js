@@ -5,7 +5,7 @@ const path = require('path');
 
 // Read application name from APPLICATION_NAME file
 // this keeps it in sync with the deploy script
-const applicationName = fs.readFileSync(path.join(__dirname, '../APPLICATION_NAME'), 'utf-8').trim();
+const applicationName = fs.readFileSync(path.join(__dirname, '../APP_NAME'), 'utf-8').trim();
 
 // Create Express app
 const app = express();

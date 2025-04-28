@@ -2,7 +2,10 @@ Example Scala application
 =========================
 
 > [!IMPORTANT]
-> If you take this source code as a template, please change the application name in [APPLICATION_NAME](APPLICATION_NAME).
+> If you take this source code as a template, please change the application's name in [APP_NAME](APP_NAME).
+
+> [!WARNING]
+> This project requires Java 21. If you are using [mise](https://mise.jdx.dev/) to manage dev tools this will be handled for you, otherwise please ensure Java 21 is installed and active.
 
 ### Running locally
 
@@ -22,7 +25,7 @@ Your service will be running at [http://localhost:8080](http://localhost:8080).
 ### Deploying to Google Cloud
 
 > [!IMPORTANT]
-> Please change the application name in the [APPLICATION_NAME](APPLICATION_NAME) file. The name must be unique.
+> Please change the application name in the [APP_NAME](APP_NAME) file. The name must be unique.
 
 The example includes a deploy script, which will:
 - package your application as a container using sbt

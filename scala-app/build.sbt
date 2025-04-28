@@ -10,8 +10,8 @@ lazy val root = (project in file("."))
   .enablePlugins(JavaAppPackaging)
   .enablePlugins(DockerPlugin)
   .settings(
-    // Take name from the APPLICATION_NAME file so the container image matches the deploy script
-    name := IO.read(file("APPLICATION_NAME")).trim,
+    // Take name from the APP_NAME file so the container image matches the deploy script
+    name := IO.read(file("APP_NAME")).trim,
     libraryDependencies ++= Seq(
       // webserver
       "com.softwaremill.sttp.tapir" %% "tapir-core" % tapirVersion,

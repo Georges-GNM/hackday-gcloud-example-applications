@@ -14,8 +14,11 @@ success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
 warning() { echo -e "${YELLOW}[WARNING]${NC} $1"; }
 error_exit() { echo -e "${RED}[ERROR]${NC} $1" >&2; exit 1; }
 
-# --- Pre-checks ---
+# --- Configuration ---
+REGION="europe-west2"
+REPOSITORY_PREFIX="eu.gcr.io"
 
+# --- Pre-checks ---
 info "Checking Docker installation..."
 command -v docker &> /dev/null || error_exit "Docker is not installed or not available in PATH."
 
@@ -30,33 +33,30 @@ if [[ -z "${PROJECT_ID}" ]]; then
   error_exit "No GCP project set. Please run 'gcloud config set project YOUR_PROJECT_ID'."
 fi
 
-info "Validating APP_NAME file..."
-if [[ ! -f "APP_NAME" ]]; then
-  error_exit "APP_NAME file not found."
+info "Validating APPLICATION_NAME file..."
+if [[ ! -f "APPLICATION_NAME" ]]; then
+  error_exit "APPLICATION_NAME file not found."
 fi
 
+# Gets the application name from the APP_Name file, for consistency (and trims whitespace)
 APPLICATION_NAME=$(< APP_NAME xargs)
-if [[ -z "APPLICATION_NAME" ]]; then
-  error_exit "APP_NAME file is empty."
+if [[ -z "$APPLICATION_NAME" ]]; then
+  error_exit "APPLICATION_NAME file is empty."
 fi
 
-if [[ "$APPLICATION_NAME" == "scala-hello-world" ]]; then
-  error_exit "APPLICATION_NAME is still set to the template default 'scala-hello-world'. Please change it to your app's name."
+if [[ "$APPLICATION_NAME" == "node-hello-world" ]]; then
+  error_exit "APPLICATION_NAME is still set to the template default 'node-hello-world'. Please change it."
 fi
-
-# --- Configuration ---
-REGION="europe-west2" # London
-REPOSITORY_PREFIX="eu.gcr.io"
 
 # --- Setup variables ---
-IMAGE_NAME="${APPLICATION_NAME}-image"  # matches Docker / packageName in build.sbt
+IMAGE_NAME="${APPLICATION_NAME}-image"
 SERVICE_NAME="${APPLICATION_NAME}-service"
 SERVICE_ACCOUNT_NAME="${APPLICATION_NAME}-sa"
 SERVICE_ACCOUNT_EMAIL="${SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
 
 # --- Ensure script is run from project root ---
-if [[ ! -f "build.sbt" ]]; then
-  error_exit "Script must be run from the project root directory (build.sbt missing)."
+if [[ ! -f "Dockerfile" ]]; then
+  error_exit "Script must be run from the project root directory (Dockerfile missing)."
 fi
 
 # --- Ensure service account exists ---
@@ -65,18 +65,14 @@ if ! gcloud iam service-accounts describe "$SERVICE_ACCOUNT_EMAIL" >/dev/null 2>
   warning "Service account not found. Creating $SERVICE_ACCOUNT_NAME..."
   gcloud iam service-accounts create "$SERVICE_ACCOUNT_NAME" \
     --display-name "Service Account for $SERVICE_NAME"
-  sleep 3 # IAM resource creation can take a few seconds to propagate
+  sleep 5
 fi
 
-# --- Build and tag the container image ---
-info "Building container image with sbt..."
-sbt Docker/publishLocal
+# --- Build and push the container image ---
+info "Building container image..."
+docker build --platform=linux/amd64 -t "$REPOSITORY_PREFIX/$PROJECT_ID/$IMAGE_NAME" .
 
-info "Tagging image for Google Container Registry..."
-docker tag "$IMAGE_NAME:latest" "$REPOSITORY_PREFIX/$PROJECT_ID/$IMAGE_NAME"
-
-# --- Push to Container Registry ---
-info "Pushing image to Container Registry..."
+info "Pushing container image to Container Registry..."
 docker push "$REPOSITORY_PREFIX/$PROJECT_ID/$IMAGE_NAME"
 
 # --- Deploy to Cloud Run ---
@@ -90,7 +86,7 @@ gcloud run deploy "$SERVICE_NAME" \
 
 # --- Output service URL ---
 success "Deployment complete!"
-success "Your service is available at:"
+info "Your service is available at:"
 gcloud run services describe "$SERVICE_NAME" \
   --platform managed \
   --region "$REGION" \
