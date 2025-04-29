@@ -4,7 +4,7 @@ GCloud example apps
 Example applications for getting up and running in Google Cloud using our two main languages - [Node](https://nodejs.org/en) and [Scala](https://www.scala-lang.org/). These are templates you can use as a reference, you can fork the repository to work on your own version of the templates or take the Node/Scala example as a starting point for your own fresh repository.
 
 > [!IMPORTANT]
-> Your app will need to use a different service name to the example project, which means editing the APPLICATION_NAME file in your your choice of the scala/node example.
+> Your app will need to use a different service name to the example project, which means editing the APP_NAME file in your your choice of the scala/node example.
 
 ## Initial setup
 

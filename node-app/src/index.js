@@ -3,7 +3,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 
-// Read application name from APPLICATION_NAME file
+// Read application name from APP_NAME file
 // this keeps it in sync with the deploy script
 const applicationName = fs.readFileSync(path.join(__dirname, '../APP_NAME'), 'utf-8').trim();
 

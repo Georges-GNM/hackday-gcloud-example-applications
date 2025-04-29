@@ -70,7 +70,7 @@ fi
 
 # --- Build and push the container image ---
 info "Building container image..."
-docker build --platform=linux/amd64 -t "$REPOSITORY_PREFIX/$PROJECT_ID/$IMAGE_NAME" .
+docker buildx build --platform=linux/amd64 -t "$REPOSITORY_PREFIX/$PROJECT_ID/$IMAGE_NAME" --load .
 
 info "Pushing container image to Container Registry..."
 docker push "$REPOSITORY_PREFIX/$PROJECT_ID/$IMAGE_NAME"
