@@ -48,7 +48,7 @@ After this finishes:
 
 ### Choice of webserver library
 
-We typically use the [Play framework](https://www.playframework.com/) for Scala applications, but this is complex to set up for a hackday and is not a great fit for Cloud Run's architecture. Instead, this demo app uses [Tapir](https://tapir.softwaremill.com/en/latest/) to create a simple webserver definition.
+We typically use the [Play framework](https://www.playframework.com/) for Scala applications, but this is complex to set up for a hackday and is not a great fit for Cloud Run's architecture. Instead, this demo app uses [Tapir](https://tapir.softwaremill.com/en/latest/) to create a simple webserver definition. We avoid the use of `Future` by choosing a webserver that takes advantage of Java 21's virtual threads.
 
 [The Scala demo app](./src/main/scala/example/Hello.scala) is a little more full-featured than the Node one, to demonstrate how to achieve a few common patterns using Tapir.
 
