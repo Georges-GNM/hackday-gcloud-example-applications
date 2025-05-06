@@ -56,7 +56,7 @@ Using Tapir this way also gives us the ability to automatically generate [API do
 
 ## Secrets
 
-The CAPI API KEY for this hackday has been made available to the application as a secret in Google Cloud. You can read it from your application's environment as `CAPI_API_KEY`.
+The Content API KEY for this hackday has been made available to the application as a secret in Google Cloud. You can read it from your application's environment as `CAPI_API_KEY`.
 
 When running the application locally, you can add `CAPI_API_KEY` to the environment so it matches production, either by exporting it from your shell or adding it to the start command.
 
