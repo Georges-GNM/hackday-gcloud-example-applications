@@ -89,9 +89,9 @@ $ echo -n "???" | gcloud secrets versions add MY_APP_SECRET --data-file=-
 Then we add an environment variable called `MY_APP_SECRET` to your application's deploy script. The environment variable is populated from the latest value of a secret called `MY_APP_SECRET` in Google's Secret Manager (which we created above).
 
 ```diff
-   --allow-unauthenticated \
-+  --update-secrets "MY_APP_SECRET=MY_APP_SECRET:latest" \
-   --update-secrets "CAPI_API_KEY=CAPI_API_KEY:latest"
+  --allow-unauthenticated \
++ --update-secrets "MY_APP_SECRET=MY_APP_SECRET:latest" \
+  --update-secrets "CAPI_API_KEY=CAPI_API_KEY:latest"
 ```
 
 Finally, we re-deploy the application by running the deploy script.
