@@ -24,6 +24,7 @@ lazy val root = (project in file("."))
       "com.softwaremill.sttp.client4" %% "core" % sttpVersion,
       "com.softwaremill.sttp.client4" %% "circe" % sttpVersion,
       // tooling
+      "org.apache.commons" % "commons-text" % "1.13.1",
       "ch.qos.logback" % "logback-classic" % "1.5.18",
       "org.scalatest" %% "scalatest" % "3.2.19" % Test
     ),
