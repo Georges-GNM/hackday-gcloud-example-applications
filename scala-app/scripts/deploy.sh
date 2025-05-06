@@ -47,26 +47,19 @@ fi
 # --- Configuration ---
 REGION="europe-west2" # London
 REPOSITORY_PREFIX="eu.gcr.io"
+SHARED_SERVICE_ACCOUNT_EMAIL="guardian-hackday-shared-sa@${PROJECT_ID}.iam.gserviceaccount.com"
 
 # --- Setup variables ---
 IMAGE_NAME="${APPLICATION_NAME}-image"  # matches Docker / packageName in build.sbt
 SERVICE_NAME="${APPLICATION_NAME}-service"
-SERVICE_ACCOUNT_NAME="${APPLICATION_NAME}-sa"
-SERVICE_ACCOUNT_EMAIL="${SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
 
 # --- Ensure script is run from project root ---
 if [[ ! -f "build.sbt" ]]; then
   error_exit "Script must be run from the project root directory (build.sbt missing)."
 fi
 
-# --- Ensure service account exists ---
-info "Checking service account $SERVICE_ACCOUNT_EMAIL..."
-if ! gcloud iam service-accounts describe "$SERVICE_ACCOUNT_EMAIL" >/dev/null 2>&1; then
-  warning "Service account not found. Creating $SERVICE_ACCOUNT_NAME..."
-  gcloud iam service-accounts create "$SERVICE_ACCOUNT_NAME" \
-    --display-name "Service Account for $SERVICE_NAME"
-  sleep 3 # IAM resource creation can take a few seconds to propagate
-fi
+# --- Shared service account ---
+info "Using shared service account: $SHARED_SERVICE_ACCOUNT_EMAIL"
 
 # --- Build and tag the container image ---
 info "Building container image with sbt..."
@@ -85,8 +78,9 @@ gcloud run deploy "$SERVICE_NAME" \
   --image "$REPOSITORY_PREFIX/$PROJECT_ID/$IMAGE_NAME" \
   --platform managed \
   --region "$REGION" \
-  --service-account "$SERVICE_ACCOUNT_EMAIL" \
-  --allow-unauthenticated
+  --service-account "$SHARED_SERVICE_ACCOUNT_EMAIL" \
+  --allow-unauthenticated \
+  --update-secrets "CAPI_API_KEY=CAPI_API_KEY:latest"
 
 # --- Output service URL ---
 success "Deployment complete!"

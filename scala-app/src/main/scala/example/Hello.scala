@@ -8,6 +8,7 @@ import sttp.tapir.generic.auto.*
 import sttp.tapir.json.circe.*
 import sttp.tapir.server.netty.sync.NettySyncServer
 import sttp.tapir.swagger.bundle.SwaggerInterpreter
+import org.apache.commons.text.StringEscapeUtils.escapeHtml4
 
 @main def main(): Unit = {
   NettySyncServer()
@@ -42,9 +43,12 @@ object Routes {
   private val hello = endpoint.get
     .in("hello" / "world")
     .in(query[Option[String]]("name"))
-    .out(stringBody)
+    .out(htmlBodyUtf8)
     .handleSuccess { maybeName =>
-      s"Hello, ${maybeName.getOrElse("world")}!"
+      val name = maybeName
+        .map(escapeHtml4)
+        .getOrElse("world")
+      s"Hello, $name!"
     }
 
   /** Endpoint that returns User objects as JSON
@@ -70,7 +74,6 @@ object Routes {
   private val ipInformation = endpoint.get
     .in("ip-info")
     .out(jsonBody[Ip])
-    .errorOut(stringBody)
     .handleSuccess { _ =>
       val ipData = basicRequest
         .get(uri"https://api.myip.com/")

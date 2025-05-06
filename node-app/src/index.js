@@ -2,6 +2,7 @@ const functions = require('@google-cloud/functions-framework');
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const escape = require('escape-html');
 
 // Read application name from APP_NAME file
 // this keeps it in sync with the deploy script
@@ -16,7 +17,8 @@ app.get('/', (req, res) => {
 });
 
 app.get('/hello/world', (req, res) => {
-  const name = req.query.name || 'World';
+  const rawName = req.query.name || 'World';
+  const name = escape(rawName);
   res.send(`Hello, ${name}!`);
 });
 
